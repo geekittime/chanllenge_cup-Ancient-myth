@@ -17,9 +17,9 @@ alipay:
   notifyUrl: http://btmzka.natappfree.cc/api/orders/notify
 
 server:
-  port: 8080
+  port: 6060
 
 
 #接口密钥
 api:
-  password: 这里更换讯飞星火api
+  password: pubNousGiUkMQboJcyxd:xOqTXCPmNqmhUZNxfhVk
