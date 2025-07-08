@@ -252,7 +252,8 @@ export default {
         }
 
         .content-inner {
-          background: #2d65f7;
+          //background: #2d65f7;
+          background: transparent;
           border-radius: 5px;
           padding: 10px;
           color: #fff;
@@ -261,9 +262,11 @@ export default {
 
       .ai-item {
         .message-content {
-          background: white;
+          //background: white;
+          background: transparent;
           display: block;
           border-radius: 5px;
+          color: #0f0f0f;
         }
 
         .user-icon {
@@ -279,6 +282,7 @@ export default {
           padding: 10px;
           font-size: 14px;
           line-height: 1.6;
+          color: #0f0f0f;
         }
       }
     }
@@ -307,6 +311,7 @@ export default {
       border: none !important;
       resize: none !important;
       box-shadow: none;
+      color: #0f0f0f;
     }
   }
 }
