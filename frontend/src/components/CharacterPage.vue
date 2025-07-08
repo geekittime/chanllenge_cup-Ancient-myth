@@ -1,20 +1,16 @@
 <template>
-  <div class="CharacterPage">
-    <head>
-      <meta charset="UTF-8">
-      <title>中国神话人物介绍</title>
-    </head>
-    <body>
-    <AppHeader/>
+    <div class="CharacterPage">
 
-    <div class="main-col">
-      <CharacterChat ref="characterchat"></CharacterChat>
+        <AppHeader />
+
+        <div class="main-col">
+            <CharacterChat ref="characterchat"></CharacterChat>
+        </div>
+
+
+        <AppFooter />
+
     </div>
-
-
-    <AppFooter/>
-    </body>
-  </div>
 </template>
 
 <script>
@@ -23,27 +19,30 @@ import AppHeader from "@/components/AppHeader.vue";
 import AppFooter from "@/components/AppFooter.vue";
 
 export default {
-  name: "CharacterPage",
-  mounted() {
-    this.init();
-  },
-  components: {
-    CharacterChat,
-    AppHeader,
-    AppFooter,
-  },
-  data() {
-    return {
-      input: '',
-    };
-  },
-  methods: {
-    init() {
-      this.input = this.$route.query.c_name;
-      this.$refs.characterchat.updateMsg(this.input)
-      //this.$refs.CharacterChat.updateMsg(this.$route.query.c_name)
+    name: "CharacterPage",
+    mounted() {
+        this.init();
+        document.title = "中国神话人物介绍";
+
     },
-  },
+    components: {
+        CharacterChat,
+        AppHeader,
+        AppFooter,
+    },
+    data() {
+        return {
+            input: '',
+        };
+    },
+
+    methods: {
+        init() {
+            this.input = this.$route.query.c_name;
+            this.$refs.characterchat.updateMsg(this.input)
+            //this.$refs.CharacterChat.updateMsg(this.$route.query.c_name)
+        },
+    },
 };
 </script>
 
@@ -51,37 +50,38 @@ export default {
 @import '../assets/styles.css';
 
 .cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
 }
 
 .character-card {
-  width: calc(20% - 20px);
-  margin-bottom: 20px;
-  box-sizing: border-box;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #efdeb0;
-  text-align: center;
-  margin: 10px;
-  font-family: 'KaiTi', '楷体', sans-serif;
+    width: calc(20% - 20px);
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #efdeb0;
+    text-align: center;
+    margin: 10px;
+    font-family: 'KaiTi', '楷体', sans-serif;
 }
 
 .character-image {
-  width: 100%;
-  height: auto;
-  border-radius: 50%;
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
 }
 
-.banner, .main-col {
-  background-image: url('../../images/mainbg.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  background-attachment: fixed;
-  background-color: transparent;
+.banner,
+.main-col {
+    background-image: url('../../images/mainbg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-color: transparent;
 }
 </style>

@@ -1,20 +1,14 @@
 <template>
-  <div class="Places">
-    <head>
-      <meta charset="UTF-8">
-      <title>中国神话人物介绍</title>
-    </head>
-    <body>
-    <AppHeader/>
+    <div class="Places">
+        <AppHeader />
 
-    <div class="main-col">
-      <PlaceChat/>
+        <div class="main-col">
+            <PlaceChat />
+        </div>
+
+
+        <AppFooter />
     </div>
-
-
-    <AppFooter/>
-    </body>
-  </div>
 </template>
 
 <script>
@@ -59,29 +53,32 @@ import AppHeader from "@/components/AppHeader.vue";
 import AppFooter from "@/components/AppFooter.vue";
 
 document.querySelectorAll('.giant-btn').forEach(function (btn) {
-  btn.addEventListener('click', function () {
-    document.querySelectorAll('.additional-buttons').forEach(function (menu) {
-      menu.style.display = 'none';
+    btn.addEventListener('click', function () {
+        document.querySelectorAll('.additional-buttons').forEach(function (menu) {
+            menu.style.display = 'none';
+        });
+        var menuId = this.getAttribute('data-target');
+        var menu = document.getElementById(menuId);
+        if (menu) {
+            menu.style.display = 'block';
+        }
     });
-    var menuId = this.getAttribute('data-target');
-    var menu = document.getElementById(menuId);
-    if (menu) {
-      menu.style.display = 'block';
-    }
-  });
 });
 export default {
-  name: "PlacesPage",
-  data() {
-    return {
-      test: 1111
-    };
-  },
-  components: {
-    PlaceChat,
-    AppHeader,
-    AppFooter
-  }
+    name: "PlacesPage",
+    data() {
+        return {
+            test: 1111
+        };
+    },
+    mounted() {
+        document.title = "中国神话地点介绍";
+    },
+    components: {
+        PlaceChat,
+        AppHeader,
+        AppFooter
+    }
 };
 </script>
 
@@ -89,39 +86,41 @@ export default {
 @import '../assets/styles.css';
 
 .main-col {
-  display: flex;
-  flex-wrap: nowrap;
-  display: flex;
-  justify-content: center; /* 水平居中 */
-  align-items: center; /* 垂直居中 */
-  width: 100%;
-  font-size: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    display: flex;
+    justify-content: center;
+    /* 水平居中 */
+    align-items: center;
+    /* 垂直居中 */
+    width: 100%;
+    font-size: 0;
 }
 
 .giant-btn {
-  padding: 150px 400px;
-  border: none;
-  cursor: pointer;
-  background-color: transparent;
-  font-size: 80px;
-  color: rgb(157, 108, 10);
-  font-family: "STKaiti", "华文行楷", serif;
-  font-weight: bold;
+    padding: 150px 400px;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    font-size: 80px;
+    color: rgb(157, 108, 10);
+    font-family: "STKaiti", "华文行楷", serif;
+    font-weight: bold;
 
 }
 
 .btn-bg1 {
-  background-image: url('../../images/shan.png');
-  background-size: cover;
+    background-image: url('../../images/shan.png');
+    background-size: cover;
 }
 
 .btn-bg2 {
-  background-image: url('../../images/shui.png');
-  background-size: cover;
+    background-image: url('../../images/shui.png');
+    background-size: cover;
 }
 
 .btn-bg3 {
-  background-image: url('../../images/qita.png');
-  background-size: cover;
+    background-image: url('../../images/qita.png');
+    background-size: cover;
 }
 </style>
