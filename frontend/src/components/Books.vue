@@ -5,52 +5,36 @@
         <title>中国神话人物介绍</title>
     </head>
     <body>
-        <header>
-            <div class="container">
-                <div id="branding">
-                </div>
-                <nav>
-                    <ul>
-                        <li><router-link to="/">主页</router-link></li>
-                        <li><router-link to="/characters">人物关系</router-link></li>
-                        <li><router-link to="/places">地点关系</router-link></li>
-                        <li><router-link to="/events">事件关系</router-link></li>
-                        <li class="current"><router-link to="/books">涉及典籍</router-link></li>
-                        <li><router-link to="/advice">联系我们</router-link></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
+        <AppHeader />
 
-        <div class="main-col">  
+        <div class="main-col">
             <div class="book-container">
-            <div v-for="(book, index) in books" :key="index" class="book-item" :class="{ 'blurred': book.blurred }" @mouseover="handleMouseOver(index)" @mouseout="handleMouseOut">    
-                <img class="book-image" :src=book.image alt="Book 1 Cover">  
-                <p class="book-title">{{ book.title }}</p>  
-                <p class="book-author">{{ book.author }}</p>  
-                <p class="book-description">{{ book.description }}</p>  
+            <div v-for="(book, index) in books" :key="index" class="book-item" :class="{ 'blurred': book.blurred }" @mouseover="handleMouseOver(index)" @mouseout="handleMouseOut">
+                <img class="book-image" :src=book.image alt="Book 1 Cover">
+                <p class="book-title">{{ book.title }}</p>
+                <p class="book-author">{{ book.author }}</p>
+                <p class="book-description">{{ book.description }}</p>
             </div>
-            </div>  
+            </div>
         </div>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 中国神话知识图谱</p>
-        </div>
-    </footer>
+        <AppFooter />
 </body>
     </div>
 </template>
-  
+
 <script>
 
   import shanhaijing_pic from "../../images/Shanhaijing.jpg"
   import huainanzig_pic from "../../images/huainanzi.jpg"
   import liezi_pic from "../../images/Liezi.jpg"
   import chinesemisstory_pic from "../../images/ChineseMisStory.jpg"
+  import AppHeader from './AppHeader.vue'
+  import AppFooter from './AppFooter.vue'
 
   export default {
     name: "BooksPage",
+    components: { AppHeader, AppFooter },
     data() {
       return {
         books: [
@@ -106,56 +90,56 @@
     }
   };
 </script>
-  
+
 <style scoped>
     @import '../assets/styles.css';
-    .book-container {  
-        display: flex;  
-        flex-wrap: wrap;  
-        justify-content: space-around;  
-    }  
-    
-    .book-container.blurred {  
-        filter: blur(5px);  
-        transition: filter 0.3s ease; 
-    }
-    .book-item.blurred {  
-        filter: blur(5px); 
-        transition: filter 0.3s ease;  
-    }
-    .book-item {  
-        display: flex;  
-        flex-direction: column;  
-        align-items: center;  
-        text-align: center;  
-        width: 20%;  
-        margin: 10px;  
-        border: 1px solid #ccc;  
-        padding: 10px;  
-        box-sizing: border-box; 
-    }  
-
-    .book-item:hover {  
-        transform: scale(1.1); 
-        z-index: 1;  
-        transition: transform 0.3s ease; 
+    .book-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
     }
 
-    .book-image {  
-        width: 100px; 
-        height: 150px; 
-        object-fit: cover; 
-    }  
-
-    .book-title,  
-    .book-author,  
-    .book-description {  
-        color: rgba(86, 43, 0, 0.942); 
-        font-weight: bold; 
-        margin-bottom: 10px;  
+    .book-container.blurred {
+        filter: blur(5px);
+        transition: filter 0.3s ease;
     }
-    
-    .book-description {  
-        flex-grow: 1; 
+    .book-item.blurred {
+        filter: blur(5px);
+        transition: filter 0.3s ease;
+    }
+    .book-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 20%;
+        margin: 10px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .book-item:hover {
+        transform: scale(1.1);
+        z-index: 1;
+        transition: transform 0.3s ease;
+    }
+
+    .book-image {
+        width: 100px;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .book-title,
+    .book-author,
+    .book-description {
+        color: rgba(86, 43, 0, 0.942);
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .book-description {
+        flex-grow: 1;
     }
 </style>
