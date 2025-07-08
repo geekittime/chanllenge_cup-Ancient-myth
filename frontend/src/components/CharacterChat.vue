@@ -38,15 +38,13 @@ export default {
       //this.test=this.input
       const neo4j = require('neo4j-driver')
 
-      const uri = 'bolt://localhost:7687'; //ip地址
-      const user = 'neo4j'; //账号
-      const password = '030212CRT';//密码
-
+      const uri = process.env.VUE_APP_NEO4J_URI;
+      const user = process.env.VUE_APP_NEO4J_USER;
+      const password = process.env.VUE_APP_NEO4J_PASSWORD;
+      const database = process.env.VUE_APP_NEO4J_DATABASE;
 
       const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
-
-      const session = driver.session({database: 'neo4j'})
-
+      const session = driver.session({database: database})
 
       try {
 
