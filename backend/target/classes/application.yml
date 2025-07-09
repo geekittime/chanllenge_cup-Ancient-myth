@@ -1,25 +1,19 @@
 spring:
+  profiles:
+    active: local # 默认激活 local profile
   datasource:
-    url: jdbc:mysql://localhost:3306/bluewhale?characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: 123
+    url:
+    username:
+    password:
   jpa:
     hibernate:
       ddl-auto: update
 
-alipay:
-  appId: 2021000147672807
-  appPrivateKey: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCMjQDAQQaQ4sVcDMu1KQHjAQTX8ng7FBOAUgijRjNu8CaaNvY3Us71LlammTQ/rtPFhTIcrili4mQ7/UfRKquNArKrQoavCEZxnJGM2nf7n6XIpVR4YbJPeLhOYbmc1UmWmsF7VgiHATHjjyjiSHnTVKTbl4/o35GDhNQtC7lzF55G4N92HD9PwCCt7i835FcLQGSUR2+YUmw9wiv/QdCZjQqvGqKGcSkiqeylyTg6yRHJ1t91Ea01T/XVp6EWEeEcWO8CTFf/zqigx+nJWhsOyljzE/jZC0WgBNksPfGh5UuZY6lg76W32QhRlCUNy7xskCDlnrSwClbw2GgmIdcRAgMBAAECggEAfJhOzx+V44C0Nlq9hvY4TvVLRugSf0TX2MxgDeWgmLrZbaJFeFu3TZBrjjqIH+AqqZHfD5+w3pEVDD0Gmjz6YQHAQ6Ow458xW2vRd40AChbHj2xIyoLI4DyDHjDxqz9EgfbkiCKHYq7DfBgfxSE8pgQGNQhRsb3nMDDjKp+XIZe2IQh5SveagSsn8Lt+acA1JDD+Htmx+STltRf6QOm0S5MsTmvHooy9G6SoQKVxIXk/X2qfuApgkJo7kec73wbzsKpXlrK//weEQr0SBx40Snw2bhJpmac6lPKHHuRUeYHcT3Pdwov/yzuj7s1Tet3uEvVMKjZ5iNP0YZIp58Y/8QKBgQD0mzHsX3j/f7tTKopqt3lOu1HgV1rJKdgLYz06JPRksN0g59VHHSW5V3PPn/l3biO4LTlNp43CTznsTmClGUkjVsgY2D7wnPYe0NWWqavR3AgFHXlu3xiQnObYGhaYPDaRyHzE2bgvM1pgwBL83Qnju2jKB+vof4C716mR1ac5zQKBgQCTGP/sy0rvA1MB7HoCtL79ELZPrcl2ET47NsYKD+cAiU/9gxyq/Ecx33/lHfgJojA2+pCcEjzKczCBf0NK8MpnXQuV0AuV2TIbPsRFEQGi04i34GeNvloZLsDnq6HCDy204SOJkIdK6juVapcaqXFk7CrR4d5VjdrHsqgDAAw+VQKBgQDmNPV8P7JRy/YR5HSW0QwzA+qf17bSojX5KbHi+gqkhSvoHyhDoHPzhhGxsx6GvzqQyMcohWvOFuAtvOoKF80UnET/1O0PaLnd8K9D93WEsa8+mSnDJeYpm/FKKute5TR6aZS7cyh8C7mgWsTEBIedM7EAiwoEK5ONtf+aB9k1dQKBgEtCoDaMMNOnNMIoNqjJx2n9MfoEZa4V1mw/cwXU6xDYMGf5vCIzn02CF5KnSa/MHrUScAiaQCYo12l6LnjaSASok3PcFQFfNgbAj3Ty5Y5kgm/pzbG08a4uwJ4Hr2R1laIVCrSokMAgpcml1pfal9zWBHaMBNBrGsPPwax/SsRdAoGAd+AKUv3iNIamVMP/Ri4Xw7ENUqQFsnkDbch2qRlofXWCqtChEo0kZr+a9C72pPTtGMZP99xpW8YMkgLXZeMt9ZjfIPgWIzz7/SIaGgouqM2zSwdN1xguqiepmQmaMScaRYr7ejxdikKHw9X8B1rSgdd2/ItwMhlab/D9HX0qJmY=
-  alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlvjCUyybfQ9T3aI+TKmFiv3RoF6jdLZiPQfThrEsmYE49GzhBG+GXNQABEv+x6/CQ+5fdi/kDa1grAk/3IM88gNZ1zaOjLT+wlnu6C7/U9qJ7cKyP+EkQSUtQnMYq5ZBaINOPuqVgOEje/I2jQKQRnSgrHonNkJPeyt8EPLJIltLBPaeTZWjKRwOgEuowrVHlF0+kMMBF7xXKTXXb7Mi+u3VfOt72wEiN0skB+JxBxuIb1PiSY8Uw8J8XljwCcGoGpRJtTckcu2Gp48/sQ8dZygeL0FXeJp+EbZPTYxZFyvKrb4lbPyVr1k5jIq+zOGuEF8qoER1j4L26Hr/PhabNQIDAQAB
-  serverUrl: https://openapi-sandbox.dl.alipaydev.com/gateway.do
-  charset: utf-8
-  signType: RSA2
-  notifyUrl: http://btmzka.natappfree.cc/api/orders/notify
-
 server:
-  port: 8080
+  port: 6060
 
 
 #接口密钥
 api:
-  password: 这里更换讯飞星火api
+  password: pubNousGiUkMQboJcyxd:xOqTXCPmNqmhUZNxfhVk
+  # 可以直接用

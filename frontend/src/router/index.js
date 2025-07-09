@@ -20,6 +20,11 @@ const router = new VueRouter({
           component: IndexPage,
         },
         {
+            path: "/AIchat",
+            name:'aichat',
+            component: () => import('../components/AIchat.vue')
+        },
+        {
           path: "/characters",
           name:'characters',
           component: CharactersPage
