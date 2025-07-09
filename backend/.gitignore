@@ -1,0 +1,36 @@
+    # Maven output directory
+    /target/
+    /pom.xml.tag
+    /pom.xml.versionsBackup
+    /pom.xml.next
+    /release.properties
+
+    # IDE files
+
+    *.iml
+    *.ipr
+    *.iws
+    .classpath
+    .project
+    .settings/
+    .vscode/
+
+    # Log files
+    *.log
+    logs/
+
+
+    src/main/resources/application-local.yml
+
+    # OS generated files
+    .DS_Store # macOS
+    Thumbs.db # Windows
+    Desktop.ini # Windows
+
+    # Compiled class files
+    *.class
+    # Package Files
+
+/src/main/java/com/example/myth/
+/src/test/java/com/example/myth/
+./application.yml

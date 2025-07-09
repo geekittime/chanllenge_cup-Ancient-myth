@@ -19,9 +19,13 @@
           <li :class="{ current: $route.path === '/books' }">
             <router-link to="/books">涉及典籍</router-link>
           </li>
+          <li :class="{ current: $route.path === '/AIchat' }">
+            <router-link to="/AIchat">AI对话</router-link>
+          </li>
           <li :class="{ current: $route.path === '/advice' }">
             <router-link to="/advice">联系我们</router-link>
           </li>
+
         </ul>
       </nav>
     </div>
