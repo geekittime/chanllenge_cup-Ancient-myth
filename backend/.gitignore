@@ -33,4 +33,4 @@
 
 /src/main/java/com/example/myth/
 /src/test/java/com/example/myth/
-./application.yml
+/src/main/resources/application-test.yml
