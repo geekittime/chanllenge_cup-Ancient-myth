@@ -1,11 +1,6 @@
 <template>
   <div class="chat-panel">
-<!--    <img-->
-<!--        src="../../assets/human.png"-->
-<!--        class="global-user-avatar"-->
-<!--        @click="goToSelfInfo"-->
-<!--        alt="头像"-->
-<!--    />-->
+    <AppHeader/>
 
     <div class="chat-title">上古神话</div>
 
@@ -64,15 +59,19 @@
 
       </el-form>
     </div>
+    <AppFooter/>
   </div>
 </template>
 
 <script>
 import { Message } from 'element-ui'
-import { marked } from 'marked'; // 注意这里有花括号 { }
+import { marked } from 'marked';
+import AppHeader from "@/components/AppHeader.vue";
+import AppFooter from "@/components/AppFooter.vue"; // 注意这里有花括号 { }
 
 export default {
   name: 'ChatPage',
+  components: {AppFooter, AppHeader},
   data() {
     return {
       formData: {
@@ -218,11 +217,11 @@ export default {
     height: calc(100vh - 200px);
     overflow-y: auto;
     padding-bottom: 10px;
-    background-image: url('../assets/img.png'); // 设置背景图
-    background-size: contain;                      // 背景图铺满
-    background-position: center;                 // 居中
-    background-repeat: no-repeat;                // 不重复
-    background-attachment: fixed;                // 不随滚动而滚动
+    background-image: url('../assets/img.png'); 
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    //background-attachment: fixed;
 
     .message-list {
       margin: 0 auto;
