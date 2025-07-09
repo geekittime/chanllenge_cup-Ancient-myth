@@ -56,6 +56,7 @@ public class AccountController {
         login_result.put("username", loginInfo.get("username"));
         login_result.put("role", String.valueOf(account.getRole()));
         return ResponseEntity.ok(Response.buildSuccess(login_result));
+
     }
 
     //获取用户id
