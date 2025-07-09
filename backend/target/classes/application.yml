@@ -1,19 +1,10 @@
 spring:
   profiles:
-    active: local # 默认激活 local profile
-  datasource:
-    url:
-    username:
-    password:
+    active: local # 默认激活 local 配置
   jpa:
     hibernate:
       ddl-auto: update
-
 server:
   port: 6060
-
-
-#接口密钥
 api:
   password: pubNousGiUkMQboJcyxd:xOqTXCPmNqmhUZNxfhVk
-  # 可以直接用

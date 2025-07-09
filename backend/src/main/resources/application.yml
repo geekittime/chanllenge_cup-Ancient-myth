@@ -1,19 +1,10 @@
 spring:
   profiles:
-    active: local # 默认激活 local profile
-  datasource:  #ai密钥直接用就好，不用修改
-    url:    #需在resources文件夹下创建application-local.yml并填写配置
-    username:
-    password:
+    active: local # 默认激活 local 配置
   jpa:
     hibernate:
       ddl-auto: update
-
 server:
   port: 6060
-
-
-#接口密钥
 api:
   password: pubNousGiUkMQboJcyxd:xOqTXCPmNqmhUZNxfhVk
-  # 不用修改，可以直接用

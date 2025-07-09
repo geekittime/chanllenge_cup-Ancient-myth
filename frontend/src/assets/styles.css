@@ -1,9 +1,11 @@
 /* 其他CSS样式保持不变，省略以节省空间 */
-html, body {
+html,
+body {
     height: 100vh;
     margin: 0;
     padding: 0;
 }
+
 body {
     display: flex;
     flex-direction: column;
@@ -11,79 +13,91 @@ body {
     line-height: 1.6;
     background-color: #f4f4f4;
 }
+
 .container {
     max-width: 1170px;
     margin: auto;
     overflow: hidden;
     padding: 0 20px;
 }
+
 header {
     background: #7c451b;
     color: #fff;
     padding-top: 20px;
     border-bottom: #e8491d 3px solid;
 }
+
 header a {
     color: #fff;
     text-decoration: none;
     text-transform: uppercase;
     font-size: 16px;
 }
-header ul {  
-    padding: 0;  
-    list-style: none;  
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;  
-    margin: 0;  
-}  
-header li {   
-    display: inline-flex; 
-    align-items: center; 
-}  
+
+header ul {
+    padding: 0;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+}
+
+header li {
+    display: inline-flex;
+    align-items: center;
+}
+
 header #branding {
     flex: 0;
 }
+
 header #branding h1 {
     margin: 0;
     font-family: "STXinwei", "华文新魏", sans-serif;
-    color:#b36d61
+    color: #b36d61
 }
 
 
-header .highlight, header .current a {
+header .highlight,
+header .current a {
     color: #e8491d;
     font-weight: bold;
 }
+
 header a:hover {
     color: #ffffff;
     font-weight: bold;
 }
+
 .banner {
     padding: 80px 0;
     color: #000;
     background-size: cover;
 }
+
 .banner h1 {
     margin: 0;
     font-size: 100px;
     font-family: '华文行楷', serif;
-    color:#0f0f0f
+    color: #0f0f0f
 }
+
 .main-col {
     flex: 1;
     display: flex;
     flex-direction: column;
     text-align: center;
     padding: 20px;
-    background-image: url('../../images/mainbg.jpg');  
-    background-repeat: no-repeat;  
-    background-size: cover;  
-    background-position: center center;  
-    background-attachment: fixed; 
-    background-color: transparent; 
+    background-image: url('../../images/mainbg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-color: transparent;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
 }
 
 footer {
@@ -91,7 +105,7 @@ footer {
     background: #7c451b;
     color: #fff;
     text-align: center;
-    
+
     position: relative;
     clear: both;
 }

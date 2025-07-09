@@ -31,3 +31,5 @@
     *.class
     # Package Files
 
+/src/main/java/com/example/myth/
+/src/test/java/com/example/myth/
