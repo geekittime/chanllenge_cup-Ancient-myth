@@ -1,19 +1,10 @@
 spring:
   profiles:
-    active: local # 默认激活 local profile
-  datasource:  #ai密钥直接用就好，不用修改
-    url: jdbc:mysql://localhost:3306/BlueWhale?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
+    active: local # 默认激活 local 配置
   jpa:
     hibernate:
       ddl-auto: update
-
 server:
   port: 6060
-
-
-#接口密钥
 api:
   password: pubNousGiUkMQboJcyxd:xOqTXCPmNqmhUZNxfhVk
-  # 不用修改，可以直接用
