@@ -217,7 +217,7 @@ export default {
     height: calc(100vh - 200px);
     overflow-y: auto;
     padding-bottom: 10px;
-    background-image: url('../assets/img.png'); 
+    background-image: url('../assets/img.png');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
