@@ -14,6 +14,7 @@
     "element-ui": "^2.15.14",
     "marked": "^16.0.0",
     "neo4j-driver": "^5.28.1",
+    "sass": "^1.89.2",
     "vue": "^2.6.14",
     "vue-router": "^3.6.5"
   },
@@ -26,7 +27,6 @@
     "dotenv-webpack": "^8.1.1",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
-    "node-sass": "^9.0.0",
     "sass-loader": "^10.5.2",
     "vue-template-compiler": "^2.6.14"
   },
