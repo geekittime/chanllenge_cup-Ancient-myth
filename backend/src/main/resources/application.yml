@@ -1,8 +1,8 @@
 spring:
   profiles:
     active: local # 默认激活 local profile
-  datasource:
-    url:
+  datasource:  #ai密钥直接用就好，不用修改
+    url:    #需在resources文件夹下创建application-local.yml并填写配置
     username:
     password:
   jpa:
@@ -16,4 +16,4 @@ server:
 #接口密钥
 api:
   password: pubNousGiUkMQboJcyxd:xOqTXCPmNqmhUZNxfhVk
-  # 可以直接用
+  # 不用修改，可以直接用
