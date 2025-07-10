@@ -1,5 +1,4 @@
     # Maven output directory
-    /target/
     /pom.xml.tag
     /pom.xml.versionsBackup
     /pom.xml.next
@@ -31,5 +30,3 @@
     *.class
     # Package Files
 
-/src/main/java/com/example/myth/
-/src/test/java/com/example/myth/
