@@ -38,9 +38,9 @@ export default {
 
     methods: {
         init() {
+            // 根据路由的参数查询子组件ref="characterchat"的部分 即CharacterChat
             this.input = this.$route.query.c_name;
             this.$refs.characterchat.updateMsg(this.input)
-            //this.$refs.CharacterChat.updateMsg(this.$route.query.c_name)
         },
     },
 };

@@ -12,10 +12,10 @@
         <section class="main-col">
             <div class="container">
                 <div class="icons">
-                    <router-link to="/characters" class="circular-button button1">人物关系</router-link>
-                    <router-link to="/places" class="circular-button button2">地点关系</router-link>
-                    <router-link to="/events" class="circular-button button3">事件关系</router-link>
-                    <router-link to="/books" class="circular-button button4">涉及典籍</router-link>
+                    <router-link to="/all" class="circular-button button1">知识图谱</router-link>
+                    <router-link to="/books" class="circular-button button2">涉及典籍</router-link>
+                    <router-link to="/AIchat" class="circular-button button3">AI对话</router-link>
+                    <router-link to="/advice" class="circular-button button4">联系我们</router-link>
                 </div>
             </div>
         </section>

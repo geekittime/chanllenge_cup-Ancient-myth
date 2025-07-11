@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
-  </div>
+    <div id="app">
+        <router-view></router-view>
+    </div>
 </template>
 
 <script>
@@ -18,29 +18,29 @@
 //import CharacterPage from './components/CharacterPage.vue';
 //import PlaceChat from './components/PlaceChat.vue';
 export default {
-  name: 'App',
-  components: {
-    //CharacterPage
-    //CharacterChat,
-    //IndexPage
-    //IndexPage,
-    //CharactersPage
-    //PlacesPage
-    //AdvicePage
-    //BooksPage
-    //EventsPage
-    //PlaceChat
-  }
+    name: 'App',
+    components: {
+        //CharacterPage
+        //CharacterChat,
+        //IndexPage
+        //IndexPage,
+        //CharactersPage
+        //PlacesPage
+        //AdvicePage
+        //BooksPage
+        //EventsPage
+        //PlaceChat
+    }
 }
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 0;
 }
 </style>
