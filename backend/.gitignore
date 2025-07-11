@@ -22,7 +22,7 @@
 
     src/main/resources/application-local.yml
 
-    # OS generated files
+    # OS generated filesgit
     .DS_Store # macOS
     Thumbs.db # Windows
     Desktop.ini # Windows
@@ -31,5 +31,4 @@
     *.class
     # Package Files
 
-/src/main/java/com/example/myth/
-/src/test/java/com/example/myth/
+/src/main/resources/application-local.yml
