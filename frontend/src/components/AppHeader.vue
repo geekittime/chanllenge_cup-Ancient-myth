@@ -7,14 +7,17 @@
                     <li>
                         <router-link to="/">主页</router-link>
                     </li>
-                    <li :class="{ current: $route.path === '/characters' }">
+                    <!-- <li :class="{ current: $route.path === '/characters' }">
                         <router-link to="/characters">人物关系</router-link>
-                    </li>
-                    <li :class="{ current: $route.path === '/places' }">
+                    </li> -->
+                    <!-- <li :class="{ current: $route.path === '/places' }">
                         <router-link to="/places">地点关系</router-link>
-                    </li>
-                    <li :class="{ current: $route.path === '/events' }">
+                    </li> -->
+                    <!-- <li :class="{ current: $route.path === '/events' }">
                         <router-link to="/events">事件关系</router-link>
+                    </li> -->
+                    <li :class="{ current: $route.path === '/all' }">
+                        <router-link to="/all">知识图谱</router-link>
                     </li>
                     <li :class="{ current: $route.path === '/books' }">
                         <router-link to="/books">涉及典籍</router-link>
