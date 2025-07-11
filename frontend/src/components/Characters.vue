@@ -73,6 +73,7 @@ export default {
     methods: {
         gotocharacter(input) {
             this.$router.push({
+                // 从人物列表页跳转人物详细页
                 name: 'onecharacter',
                 query: {
                     c_name: input
