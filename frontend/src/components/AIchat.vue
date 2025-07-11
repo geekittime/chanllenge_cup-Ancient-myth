@@ -4,6 +4,7 @@
 
     <div class="chat-title">上古神话</div>
 
+    <div class="message-panel-wrapper">
     <div class="message-panel" id="message-panel">
       <div class="message-list">
         <div
@@ -33,6 +34,7 @@
         </div>
       </div>
     </div>
+    </div>
 
     <div class="send-panel">
       <el-form :model="formData" ref="formDataRef" @submit.prevent>
@@ -53,7 +55,7 @@
               class="send-icon-btn"
               @click="sendMessage"
           >
-            <img src="../assets/buton.png" class="send-icon-img" />
+            <img src="../assets/img_6.png" class="send-icon-img" />
           </el-button>
         </el-form-item>
 
@@ -169,6 +171,30 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.message-panel-wrapper {
+  flex: 1; /* 让消息面板区域占据 Header, Title, Footer, Send Panel 之外的所有剩余垂直空间 */
+  display: flex;
+  justify-content: center; /* 水平居中 */
+
+  padding: 0 20px 20px; /* 顶部0，左右20px，底部20px的内边距，为了让白框不贴边 */
+  box-sizing: border-box;
+
+}
+.chat-panel .message-panel {
+
+  background: rgba(255, 255, 255, 0.55); /* 半透明白色背景 */
+  border-radius: 15px; /* 圆角 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* 阴影 */
+
+  width: 900px; /* 或根据需要调整白框的固定宽度 */
+  max-width: 90%; /* 确保在小屏幕上也能适应 */
+  height: 100%; /* 填充其父容器 message-panel-wrapper 的高度 */
+  overflow-y: auto; /* 如果内容超出，允许滚动 */
+  padding: 20px; /* 消息列表内容与白框内边缘的距离 */
+  box-sizing: border-box; /* 确保 padding 不增加宽度 */
+
+
+}
 .send-icon-btn {
   position: absolute;
   bottom: 10px;
@@ -205,7 +231,7 @@ export default {
 
 .chat-panel {
   //background: #eff0f6;
-  background-image: url('../assets/img_4.png');
+  background-image: url('../assets/img_7.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -304,7 +330,8 @@ export default {
     //background: transparent;
     border-radius: 10px;
     padding: 10px;
-    background-image: url('../assets/img_2.png');
+    //background-image: url('../assets/img_2.png');
+    background: white;
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;

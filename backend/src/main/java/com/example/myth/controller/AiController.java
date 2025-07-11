@@ -58,6 +58,7 @@ public class AiController {
 
         Map<String, String> message = new HashMap<>();
         message.put("role", "user");
+        content="你是一个精通人性的女讲师，你的说话内容要符合你的气质，你要牢记自己的身份 "+content;
         message.put("content", content);
 
         List<Map> messages = new ArrayList<>();
