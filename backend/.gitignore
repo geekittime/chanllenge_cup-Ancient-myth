@@ -22,7 +22,7 @@
 
     src/main/resources/application-local.yml
 
-    # OS generated filesgit 
+    # OS generated filesgit
     .DS_Store # macOS
     Thumbs.db # Windows
     Desktop.ini # Windows
