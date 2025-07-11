@@ -204,12 +204,19 @@ export default {
 }
 
 .chat-panel {
-  background: #eff0f6;
-  height: 100vh;
+  //background: #eff0f6;
+  background-image: url('../assets/img_4.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  //background: white;
+  //height: 100vh;
+  position: relative;
 
   .chat-title {
+    font-family: '华文行楷', serif;
     text-align: center;
-    font-size: 20px;
+    font-size: 35px;
     font-weight: bold;
   }
 
@@ -217,7 +224,7 @@ export default {
     height: calc(100vh - 200px);
     overflow-y: auto;
     padding-bottom: 10px;
-    background-image: url('../assets/img.png');
+    //background-image: url('../assets/img.png');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -236,7 +243,8 @@ export default {
           height: 40px;
           line-height: 40px;
           border-radius: 50%;
-          background: #535353;
+          //background: #535353;
+          background: orange;
           color: white;
           text-align: center;
           margin-left: 10px;
@@ -252,24 +260,27 @@ export default {
 
         .content-inner {
           //background: #2d65f7;
-          background: transparent;
+          background: white;
+          //background: transparent;
           border-radius: 5px;
           padding: 10px;
-          color: #fff;
+          //color: #fff;
+          color:black;
         }
       }
 
       .ai-item {
         .message-content {
-          //background: white;
-          background: transparent;
+          background: white;
+          //background: transparent;
           display: block;
           border-radius: 5px;
           color: #0f0f0f;
         }
 
         .user-icon {
-          background: #64018f;
+          //background: #64018f;
+          background: orange;
           margin-left: 0;
         }
 
@@ -290,7 +301,7 @@ export default {
   .send-panel {
     width: 650px;
     margin: 5px auto 0;
-    background: transparent;
+    //background: transparent;
     border-radius: 10px;
     padding: 10px;
     background-image: url('../assets/img_2.png');

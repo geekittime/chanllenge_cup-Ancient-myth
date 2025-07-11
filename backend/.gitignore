@@ -1,4 +1,5 @@
     # Maven output directory
+    /target/
     /pom.xml.tag
     /pom.xml.versionsBackup
     /pom.xml.next
@@ -21,7 +22,7 @@
 
     src/main/resources/application-local.yml
 
-    # OS generated files
+    # OS generated filesgit 
     .DS_Store # macOS
     Thumbs.db # Windows
     Desktop.ini # Windows
@@ -30,3 +31,4 @@
     *.class
     # Package Files
 
+/src/main/resources/application-local.yml
