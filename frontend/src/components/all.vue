@@ -301,9 +301,10 @@ export default {
             const addNode = (nodeData, isTarget = false) => {
                 if (!nodes.has(nodeData.properties.id)) {
                     const isPlace = nodeData.labels.includes('Place');
+                    const nodeName = isPlace ? (nodeData.properties.place || nodeData.properties.name) : nodeData.properties.name;
                     const node = {
                         id: nodeData.properties.id,
-                        name: isPlace ? (nodeData.properties.place || nodeData.properties.name) : nodeData.properties.name,
+                        name: nodeName,
                         type: isPlace ? 'place' : 'person',
                         symbolSize: isTarget ? 60 : 35,
                         itemStyle: { color: isTarget ? '#FF6B6B' : (isPlace ? '#4682B4' : '#8B4513') },
@@ -319,11 +320,25 @@ export default {
             addNode(targetNodeData, true);
             addNode(relatedNodeData, false);
 
+            // 【新增】在创建链接时添加节点名称信息，用于关系线条tooltip
+            const targetNodeName = targetNodeData.labels.includes('Place') ?
+                (targetNodeData.properties.place || targetNodeData.properties.name) :
+                targetNodeData.properties.name;
+            const relatedNodeName = relatedNodeData.labels.includes('Place') ?
+                (relatedNodeData.properties.place || relatedNodeData.properties.name) :
+                relatedNodeData.properties.name;
+
             links.push({
                 source: targetNodeData.properties.id,
                 target: relatedNodeData.properties.id,
                 name: relationship.properties.type || (relationType === 'person' ? '人人关系' : '人地关系'),
-                lineStyle: { color: relationType === 'person' ? '#8B4513' : '#4682B4', width: 2, opacity: 0.8 }
+                sourceName: targetNodeName, // 【新增】源节点名称
+                targetName: relatedNodeName, // 【新增】目标节点名称
+                lineStyle: {
+                    color: relationType === 'person' ? '#8B4513' : '#4682B4',
+                    width: 2,
+                    opacity: 0.8
+                }
             });
         },
 
@@ -338,9 +353,10 @@ export default {
                     [sourceNode, targetNode].forEach(nodeData => {
                         if (!nodes.has(nodeData.properties.id)) {
                             const isPlace = nodeData.labels.includes('Place');
+                            const nodeName = isPlace ? (nodeData.properties.place || nodeData.properties.name) : nodeData.properties.name;
                             nodes.set(nodeData.properties.id, {
                                 id: nodeData.properties.id,
-                                name: isPlace ? (nodeData.properties.place || nodeData.properties.name) : nodeData.properties.name,
+                                name: nodeName,
                                 type: isPlace ? 'place' : 'person',
                                 symbolSize: 20,
                                 itemStyle: { color: isPlace ? '#4682B4' : '#8B4513' },
@@ -348,11 +364,26 @@ export default {
                             });
                         }
                     });
+
+                    // 【新增】在创建链接时添加节点名称信息
+                    const sourceNodeName = sourceNode.labels.includes('Place') ?
+                        (sourceNode.properties.place || sourceNode.properties.name) :
+                        sourceNode.properties.name;
+                    const targetNodeName = targetNode.labels.includes('Place') ?
+                        (targetNode.properties.place || targetNode.properties.name) :
+                        targetNode.properties.name;
+
                     links.push({
                         source: sourceNode.properties.id,
                         target: targetNode.properties.id,
                         name: relationship.properties.type || (type === 'person' ? '人人关系' : '人地关系'),
-                        lineStyle: { color: type === 'person' ? '#8B4513' : '#4682B4', width: 1.5, opacity: 0.7 }
+                        sourceName: sourceNodeName, // 【新增】源节点名称
+                        targetName: targetNodeName, // 【新增】目标节点名称
+                        lineStyle: {
+                            color: type === 'person' ? '#8B4513' : '#4682B4',
+                            width: 1.5,
+                            opacity: 0.7
+                        }
                     });
                 });
             };
@@ -376,7 +407,26 @@ export default {
 
             const option = {
                 backgroundColor: 'transparent',
-                tooltip: { show: false },
+                // 【修改】简化tooltip配置，只显示关系名称
+                tooltip: {
+                    show: true,
+                    trigger: 'item',
+                    triggerOn: 'mousemove',
+                    formatter: function (params) {
+                        // 只处理边的tooltip，显示简单的关系名称
+                        if (params.dataType === 'edge') {
+                            return `<span style="color: #333; font-size: 14px; font-weight: bold;">${params.data.name}</span>`;
+                        }
+                        return null; // 节点的tooltip由自定义事件处理
+                    },
+                    // 【新增】简单的tooltip样式
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderColor: '#ccc',
+                    borderWidth: 1,
+                    textStyle: {
+                        color: '#333'
+                    }
+                },
                 series: [{
                     type: 'graph',
                     layout: 'force', // 始终使用力导向布局
@@ -400,14 +450,43 @@ export default {
                     },
                     edgeSymbol: ['', 'arrow'],
                     edgeSymbolSize: 8,
-                    lineStyle: { opacity: 0.6, curveness: 0.1 }
+                    lineStyle: {
+                        opacity: 0.6,
+                        curveness: 0.1
+                    },
+                    // 【新增】关系线条悬停时的高亮效果
+                    emphasis: {
+                        lineStyle: {
+                            width: 4,
+                            opacity: 1
+                        }
+                    }
                 }]
             };
 
             this.myChart.setOption(option, true);
-            this.myChart.off('click').on('click', (params) => params.dataType === 'node' && this.selectNode(params.data));
-            this.myChart.off('mouseover').on('mouseover', (params) => params.dataType === 'node' && this.showNodeTooltip(params.data, params.event));
-            this.myChart.off('mouseout').on('mouseout', () => this.hoveredNode = null);
+
+            // 【修改】事件处理 - 添加对边的处理，但保持节点的自定义tooltip
+            this.myChart.off('click').on('click', (params) => {
+                if (params.dataType === 'node') {
+                    this.selectNode(params.data);
+                }
+            });
+
+            this.myChart.off('mouseover').on('mouseover', (params) => {
+                if (params.dataType === 'node') {
+                    // 对于节点，继续使用自定义tooltip
+                    this.showNodeTooltip(params.data, params.event);
+                }
+                // 对于边，ECharts的tooltip会自动处理
+            });
+
+            this.myChart.off('mouseout').on('mouseout', (params) => {
+                if (params.dataType === 'node') {
+                    this.hoveredNode = null;
+                }
+                // 对于边，ECharts会自动隐藏tooltip
+            });
         },
 
         toggleRelationType(type) {

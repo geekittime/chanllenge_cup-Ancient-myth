@@ -82,6 +82,7 @@ const router = new VueRouter({
             path: "/all",
             name: 'all',
             component: () => import('../components/all.vue'),
+            meta: { requiresAuth: true }
         }
     ]
 })
