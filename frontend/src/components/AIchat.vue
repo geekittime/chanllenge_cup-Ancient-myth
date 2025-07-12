@@ -94,12 +94,11 @@
 import { Message } from 'element-ui'
 import { marked } from 'marked';
 import AppHeader from "@/components/AppHeader.vue";
-import AppFooter from "@/components/AppFooter.vue";
 import axios from 'axios';
 
 export default {
   name: 'ChatPage',
-  components: {AppFooter, AppHeader},
+  components: { AppHeader},
   data() {
     return {
       formData: {
@@ -292,15 +291,29 @@ export default {
 .chat-container {
   display: flex;
   height: 100vh;
-  background-image: url('../assets/img_7.png');  /* 新增 */
+  //background-image: url('../assets/img_7.png');  /* 新增 */
   background-repeat: no-repeat;                   /* 新增 */
   background-position: center;                    /* 新增 */
   background-size: cover;                         /* 新增 */
   background-attachment: fixed;
 }
+/* 新增伪元素背景 */
+.chat-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('../assets/img_7.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  z-index: -1;
+}
 
 .sidebar {
-  width: 280px;
+  width: 200px;
   background: #f5f5f5;
   border-right: 1px solid #e0e0e0;
   display: flex;
@@ -377,6 +390,7 @@ export default {
     width: 900px;
     max-width: 90%;
     height: 100%;
+    max-height: calc(100vh - 320px);  //不加这一行整个页面滚动
     overflow-y: auto;
     padding: 20px;
     box-sizing: border-box;
