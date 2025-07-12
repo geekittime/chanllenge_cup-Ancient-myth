@@ -5,35 +5,35 @@
     <div class="chat-title">上古神话</div>
 
     <div class="message-panel-wrapper">
-    <div class="message-panel" id="message-panel">
-      <div class="message-list">
-        <div
-            :class="['message-item', item.type === 1 ? 'ai-item' : '']"
-            v-for="(item, index) in messageList"
-            :key="index"
-            :id="'item' + index"
-        >
-          <template v-if="item.type === 0">
-            <div class="message-content">
-              <div class="content-inner">{{ item.content }}</div>
-            </div>
-            <div class="user-icon">我</div>
-          </template>
-          <template v-else>
-            <div class="user-icon">AI</div>
-            <div class="message-content ai-item">
-              <div
-                  class="markdown-content"
-                  v-html="renderMarkdown(item.content.join(''))"
-              ></div>
-              <div class="loading" v-if="item.loading">
-                <img src="../assets/loading.gif" />
+      <div class="message-panel" id="message-panel">
+        <div class="message-list">
+          <div
+              :class="['message-item', item.type === 1 ? 'ai-item' : '']"
+              v-for="(item, index) in messageList"
+              :key="index"
+              :id="'item' + index"
+          >
+            <template v-if="item.type === 0">
+              <div class="message-content">
+                <div class="content-inner">{{ item.content }}</div>
               </div>
-            </div>
-          </template>
+              <div class="user-icon">我</div>
+            </template>
+            <template v-else>
+              <div class="user-icon">AI</div>
+              <div class="message-content ai-item">
+                <div
+                    class="markdown-content"
+                    v-html="renderMarkdown(item.content.join(''))"
+                ></div>
+                <div class="loading" v-if="item.loading">
+                  <img src="../assets/loading.gif" />
+                </div>
+              </div>
+            </template>
+          </div>
         </div>
       </div>
-    </div>
     </div>
 
     <div class="send-panel">
@@ -97,7 +97,7 @@ export default {
           Message.warning('请输入内容')
           return
         }
-          this.sendMessage()
+        this.sendMessage()
       }
     },
     sendMessage() {
