@@ -107,13 +107,14 @@ export default {
       messageList: [],
       sessionList: [],
       currentSessionId: null,
-      userId: 'user', // 这里可以从登录信息获取
+      userId: '', // 这里可以从登录信息获取
       loading: false,
       creatingSession: false,
       eventSource: null,
     }
   },
   async mounted() {
+    this.userId=localStorage.getItem("username");
     await this.loadUserSessions();
     if (this.sessionList.length === 0) {
       await this.createNewSession();
