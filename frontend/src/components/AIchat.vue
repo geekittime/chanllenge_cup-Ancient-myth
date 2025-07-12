@@ -390,7 +390,7 @@ export default {
     width: 900px;
     max-width: 90%;
     height: 100%;
-    max-height: calc(100vh - 320px);  //不加这一行整个页面滚动
+    //max-height: calc(100vh - 320px);  //不加这一行整个页面滚动
     overflow-y: auto;
     padding: 20px;
     box-sizing: border-box;
