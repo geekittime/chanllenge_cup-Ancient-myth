@@ -20,16 +20,18 @@ public class MyWebMvConfig implements WebMvcConfigurer {
     @Autowired
     LoginInterceptor loginInterceptor;
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/api/accounts")
-                .excludePathPatterns("/api/accounts/login")
-                //.excludePathPatterns("/api/accounts/**")
-                .excludePathPatterns("/api/orders/{orderId}/pay")
-                .excludePathPatterns("/api/orders/notify")
-                .excludePathPatterns("/api/stream")
-                .order(1);
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(loginInterceptor)
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/api/accounts")
+//                .excludePathPatterns("/api/accounts/login")
+//                //.excludePathPatterns("/api/accounts/**")
+//                .excludePathPatterns("/api/orders/{orderId}/pay")
+//                .excludePathPatterns("/api/orders/notify")
+//                .excludePathPatterns("/api/stream")
+//                .excludePathPatterns("/api/chat/session")
+//                .excludePathPatterns("/api/chat/sessions")
+//                .order(1);
+//    }
 }

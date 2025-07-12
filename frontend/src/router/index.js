@@ -39,7 +39,7 @@ const router = new VueRouter({
         {
             path: "/AIchat",
             name: 'aichat',
-            component: () => import('../components/rag_AIchat.vue'),
+            component: () => import('../components/AIchat.vue'),
             meta: { requiresAuth: true }
         },
         // {
