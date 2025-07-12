@@ -35,7 +35,7 @@ public class CorsFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");//允许所有来源的跨域请求
+        response.setHeader("Access-Control-Allow-Origin", "*");//允许所有来源的跨域请求
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, PATCH");//允许的 HTTP 方法
         response.setHeader("Access-Control-Allow-Headers", "Authorization,Content-Type,token,Cookie");//允许的自定义请求头
         response.setHeader("Access-Control-Max-Age", "3600");//预检请求的结果缓存时间为 3600 秒

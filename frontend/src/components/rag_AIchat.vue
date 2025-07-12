@@ -121,7 +121,7 @@ export default {
       this.loading = true
       this.formData.content = ''
 
-      this.eventSource = new EventSource(`/api/stream?message=${message}`)
+      this.eventSource = new EventSource(`http://49.0.253.31:8777/api/stream?message=${message}`)
       //Message.success('开始输入')
 
       this.eventSource.onmessage = (event) => {

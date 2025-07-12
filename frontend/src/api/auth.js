@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // 创建axios实例
 const api = axios.create({
-    baseURL: 'http://localhost:6060', // 根据您的后端地址调整
+    baseURL: 'http://49.0.253.31:8777', // 根据您的后端地址调整
     timeout: 10000
 })
 

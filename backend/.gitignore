@@ -32,3 +32,6 @@
     # Package Files
 
 /src/main/resources/application-local.yml
+.env
+/target/Myth-0.0.1-SNAPSHOT.jar
+/target/Myth-0.0.1-SNAPSHOT.jar.original

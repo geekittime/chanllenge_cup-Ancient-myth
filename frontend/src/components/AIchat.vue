@@ -52,7 +52,7 @@
                       v-html="renderMarkdown(item.content)"
                   ></div>
                   <div class="loading" v-if="item.loading">
-                    <img src="../assets/loading.gif" />
+                    <img src="../assets/loading.gif"/>
                   </div>
                 </div>
               </template>
@@ -80,7 +80,7 @@
                 class="send-icon-btn"
                 @click="sendMessage"
             >
-              <img src="../assets/img_6.png" class="send-icon-img" />
+              <img src="../assets/img_6.png" class="send-icon-img"/>
             </el-button>
           </el-form-item>
         </el-form>
@@ -91,14 +91,14 @@
 </template>
 
 <script>
-import { Message } from 'element-ui'
-import { marked } from 'marked';
+import {Message} from 'element-ui'
+import {marked} from 'marked';
 import AppHeader from "@/components/AppHeader.vue";
-import axios from 'axios';
+import api from '../api/auth.js';
 
 export default {
   name: 'ChatPage',
-  components: { AppHeader},
+  components: {AppHeader},
   data() {
     return {
       formData: {
@@ -114,7 +114,7 @@ export default {
     }
   },
   async mounted() {
-    this.userId=localStorage.getItem("username");
+    this.userId = localStorage.getItem("username");
     await this.loadUserSessions();
     if (this.sessionList.length === 0) {
       await this.createNewSession();
@@ -127,7 +127,7 @@ export default {
     // 加载用户的会话列表
     async loadUserSessions() {
       try {
-        const response = await axios.get(`/api/chat/sessions?userId=${this.userId}`);
+        const response = await api.get(`/api/chat/sessions?userId=${this.userId}`);
         this.sessionList = response.data;
       } catch (error) {
         console.error('加载会话列表失败:', error);
@@ -139,7 +139,7 @@ export default {
     async createNewSession() {
       this.creatingSession = true;
       try {
-        const response = await axios.post(`/api/chat/session?userId=${this.userId}`);
+        const response = await api.post(`/api/chat/session?userId=${this.userId}`);
         const newSession = response.data;
         this.sessionList.unshift(newSession);
         this.currentSessionId = newSession.id;
@@ -164,7 +164,7 @@ export default {
     // 加载会话的聊天记录
     async loadSessionRecords(sessionId) {
       try {
-        const response = await axios.get(`/api/chat/records/${sessionId}`);
+        const response = await api.get(`/api/chat/records/${sessionId}`);
         this.messageList = response.data.map(record => ({
           type: record.messageType,
           content: record.messageType === 1 ? record.content : record.content,
@@ -207,7 +207,7 @@ export default {
 
     keySend(e) {
       if (e.key === 'Enter') {
-        if(!this.formData.content) {
+        if (!this.formData.content) {
           Message.warning('请输入内容')
           return
         }
@@ -241,8 +241,18 @@ export default {
       this.loading = true
       this.formData.content = ''
 
-      this.eventSource = new EventSource(`/api/stream?message=${encodeURIComponent(message)}&sessionId=${this.currentSessionId}&userId=${this.userId}`)
+      // 构建EventSource URL
+      const eventSourceUrl = `http://49.0.253.31:8777/api/stream?message=${encodeURIComponent(message)}&sessionId=${this.currentSessionId}&userId=${this.userId}`
 
+      // 添加控制台输出
+      // console.log('===== AI聊天请求信息 =====')
+      // console.log('发送消息到地址:', eventSourceUrl)
+      // console.log('消息内容:', message)
+      // console.log('会话ID:', this.currentSessionId)
+      // console.log('用户ID:', this.userId)
+      // console.log('========================')
+
+      this.eventSource = new EventSource(eventSourceUrl)
       this.eventSource.onmessage = (event) => {
         let response = event.data
         if (response === 'end') {
@@ -293,11 +303,12 @@ export default {
   display: flex;
   height: 100vh;
   //background-image: url('../assets/img_7.png');  /* 新增 */
-  background-repeat: no-repeat;                   /* 新增 */
-  background-position: center;                    /* 新增 */
-  background-size: cover;                         /* 新增 */
+  background-repeat: no-repeat; /* 新增 */
+  background-position: center; /* 新增 */
+  background-size: cover; /* 新增 */
   background-attachment: fixed;
 }
+
 /* 新增伪元素背景 */
 .chat-container::before {
   content: '';

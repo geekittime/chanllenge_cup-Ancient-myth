@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // 创建一个axios实例，可以配置基础URL和其他设置
 const apiClient = axios.create({
-    baseURL: '/api', // 代理或后端的根路径
+    baseURL: 'http://49.0.253.31:8777/api', // 代理或后端的根路径
     headers: {
         'Content-Type': 'application/json',
     },

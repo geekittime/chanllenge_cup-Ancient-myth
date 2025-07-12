@@ -14,33 +14,31 @@ Vue.use(VueRouter);
 
 //3.创建VueRouter的实例
 const router = new VueRouter({
-    //tips:不想要 #（锚点）就添加下面代码
-    mode: 'history',
     //4.配置路由信息
     routes: [
         {
             path: "/",
             name: 'home',
             component: IndexPage,
-            meta: { requiresAuth: true }
+            meta: {requiresAuth: true}
         },
         {
             path: "/login",
             name: 'login',
             component: LoginPage,
-            meta: { requiresAuth: false }
+            meta: {requiresAuth: false}
         },
         {
             path: "/register",
             name: 'register',
             component: RegisterPage,
-            meta: { requiresAuth: false }
+            meta: {requiresAuth: false}
         },
         {
             path: "/AIchat",
             name: 'aichat',
             component: () => import('../components/AIchat.vue'),
-            meta: { requiresAuth: true }
+            meta: {requiresAuth: true}
         },
         // {
         //     path: "/characters",
@@ -58,13 +56,13 @@ const router = new VueRouter({
             path: "/advice",
             name: 'advice',
             component: AdvicePage,
-            meta: { requiresAuth: true }
+            meta: {requiresAuth: true}
         },
         {
             path: "/books",
             name: 'books',
             component: BooksPage,
-            meta: { requiresAuth: true }
+            meta: {requiresAuth: true}
         },
         // {
         //     path: "/events",
@@ -94,7 +92,7 @@ router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth && !token) {
         next({
             path: '/login',
-            query: { redirect: to.fullPath } // 保存用户想要访问的页面
+            query: {redirect: to.fullPath} // 保存用户想要访问的页面
         })
     }
     // 如果用户已登录但想访问登录/注册页面，重定向到首页

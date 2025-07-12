@@ -30,7 +30,7 @@ public class AiController {
 
     private static final String DONE = "[DONE]";
     private static final Integer timeout = 60;
-    private static final String LOCAL_AI_URL = "http://localhost:9621/query";
+    private static final String LOCAL_AI_URL = "http://49.0.253.31:8383/query";
 
     @Autowired
     private ChatService chatService;
@@ -87,7 +87,7 @@ public class AiController {
             OkHttpClient client = new OkHttpClient.Builder()
                     .connectTimeout(timeout, TimeUnit.SECONDS)
                     .writeTimeout(timeout, TimeUnit.SECONDS)
-                    .readTimeout(timeout, TimeUnit.SECONDS)
+                    .readTimeout(120, TimeUnit.SECONDS)
                     .build();
 
             // 发送请求并获取响应
