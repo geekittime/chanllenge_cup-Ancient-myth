@@ -1,5 +1,5 @@
 <template>
-    <!-- 模板部分保持不变 -->
+    <!-- 模板部分 -->
     <div class="knowledge-graph-page">
         <AppHeader />
 
@@ -26,6 +26,11 @@
                     <button @click="toggleRelationType('place')" :class="['btn', { active: showPlaceRelations }]">
                         人地关系 ({{ totalPlaceRelations }})
                     </button>
+                    <!-- 🆕 新增：数据量控制按钮 -->
+                    <button @click="toggleDataLimit" :class="['btn', 'btn-limit', { active: showAllData }]">
+                        {{ showAllData ? '显示部分数据' : '显示全部数据' }}
+
+                    </button>
                     <button @click="resetGraph" class="btn btn-reset">重置视图</button>
                     <button @click="toggleSearchPanel" class="btn btn-search">
                         {{ showSearchPanel ? '隐藏搜索' : '显示搜索' }}
@@ -46,6 +51,11 @@
                 <div v-if="currentSearchTarget" class="legend-item search-target">
                     <span class="legend-dot search-target-node"></span>
                     <span>搜索目标: {{ currentSearchTarget }}</span>
+                </div>
+                <!-- 🆕 新增：数据状态显示 -->
+                <div class="legend-item data-status">
+                    <span class="legend-info">📊</span>
+                    <span>{{ showAllData ? '全部数据' : `部分数据 (${dataLimit}个)` }}</span>
                 </div>
             </div>
 
@@ -77,12 +87,42 @@
                     </div>
                 </div>
 
+                <!-- 🆕 新增：数据控制面板 -->
+                <div class="data-control-section">
+                    <h4>数据显示控制</h4>
+                    <div class="control-group">
+                        <label>显示数量限制：</label>
+                        <select v-model="dataLimit" @change="onDataLimitChange" :disabled="showAllData">
+                            <option value="200">200个关系</option>
+                            <option value="500">500个关系</option>
+                            <option value="1000">1000个关系</option>
+                            <option value="2000">2000个关系</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <button @click="toggleDataLimit" :class="['btn-toggle-all', { active: showAllData }]">
+                            {{ showAllData ? '🔄 显示部分数据' : '🌐 显示全部数据' }}
+                        </button>
+                    </div>
+                    <div class="data-warning" v-if="!showAllData && totalAvailableRelations > dataLimit">
+                        <p>⚠️ 当前仅显示 {{ dataLimit }} 个关系，数据库中共有 {{ totalAvailableRelations }} 个关系</p>
+                    </div>
+                </div>
+
                 <div v-if="selectedNode" class="node-info-section">
                     <h4>节点信息</h4>
                     <div class="node-info">
                         <div><strong>名称：</strong>{{ selectedNode.name }}</div>
                         <div><strong>类型：</strong>{{ selectedNode.type === 'person' ? '人物' : '地点' }}</div>
                         <div><strong>连接数：</strong>{{ selectedNode.degree }}</div>
+                        <div v-if="selectedNode.relations && selectedNode.relations.length > 0">
+                            <strong>相关关系：</strong>
+                            <ul class="relation-list">
+                                <li v-for="relation in selectedNode.relations" :key="relation.key">
+                                    {{ relation.type }} ({{ relation.count }}个)
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -90,11 +130,11 @@
             <div class="bottom-stats">
                 <div class="stat-item">
                     <span class="stat-number">{{ nodeCount }}</span>
-                    <span class="stat-label">总节点</span>
+                    <span class="stat-label">当前节点</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number">{{ relationCount }}</span>
-                    <span class="stat-label">总关系</span>
+                    <span class="stat-label">当前关系</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number">{{ totalPersons }}</span>
@@ -103,6 +143,11 @@
                 <div class="stat-item">
                     <span class="stat-number">{{ totalPlaces }}</span>
                     <span class="stat-label">地点</span>
+                </div>
+                <!-- 🆕 新增：数据状态指示器 -->
+                <div class="stat-item" :class="{ 'stat-limited': !showAllData }">
+                    <span class="stat-number">{{ showAllData ? '全部' : '部分' }}</span>
+                    <span class="stat-label">数据模式</span>
                 </div>
             </div>
 
@@ -148,7 +193,14 @@ export default {
             totalPersons: 0,
             totalPlaces: 0,
             totalPersonRelations: 0,
-            totalPlaceRelations: 0
+            totalPlaceRelations: 0,
+            // 关系计数和管理
+            relationCountMap: new Map(),
+            nodePairRelations: new Map(),
+            // 🆕 新增：数据量控制相关变量
+            showAllData: false, // 默认显示部分数据
+            dataLimit: 300, // 默认显示300个关系
+            totalAvailableRelations: 0 // 数据库中总的关系数量
         }
     },
     mounted() {
@@ -210,6 +262,10 @@ export default {
             this.loading = true;
             this.graphData = { nodes: [], links: [] };
             this.searchMessage = '';
+
+            // 重置关系计数
+            this.relationCountMap.clear();
+            this.nodePairRelations.clear();
 
             const isSearchMode = searchParams && searchParams.name && searchParams.type;
 
@@ -320,7 +376,7 @@ export default {
             addNode(targetNodeData, true);
             addNode(relatedNodeData, false);
 
-            // 【新增】在创建链接时添加节点名称信息，用于关系线条tooltip
+            // 获取节点名称
             const targetNodeName = targetNodeData.labels.includes('Place') ?
                 (targetNodeData.properties.place || targetNodeData.properties.name) :
                 targetNodeData.properties.name;
@@ -328,28 +384,88 @@ export default {
                 (relatedNodeData.properties.place || relatedNodeData.properties.name) :
                 relatedNodeData.properties.name;
 
+            // 多重关系处理逻辑
+            const sourceId = targetNodeData.properties.id;
+            const targetId = relatedNodeData.properties.id;
+            const relationshipType = relationship.properties.type || (relationType === 'person' ? '人人关系' : '人地关系');
+
+            // 创建节点对的唯一标识（确保一致的顺序）
+            const nodePairKey = sourceId < targetId ? `${sourceId}-${targetId}` : `${targetId}-${sourceId}`;
+
+            // 记录这对节点之间的关系
+            if (!this.nodePairRelations.has(nodePairKey)) {
+                this.nodePairRelations.set(nodePairKey, []);
+            }
+
+            const existingRelations = this.nodePairRelations.get(nodePairKey);
+            const relationIndex = existingRelations.length;
+
+            // 添加关系到记录中
+            existingRelations.push({
+                type: relationshipType,
+                source: sourceId,
+                target: targetId,
+                sourceName: targetNodeName,
+                targetName: relatedNodeName
+            });
+
+            // 计算曲线参数以避免重叠
+            const curveness = this.calculateCurveness(relationIndex);
+
+            // 创建关系链接，包含唯一ID
+            const linkId = `${sourceId}-${targetId}-${relationshipType}-${relationIndex}`;
             links.push({
-                source: targetNodeData.properties.id,
-                target: relatedNodeData.properties.id,
-                name: relationship.properties.type || (relationType === 'person' ? '人人关系' : '人地关系'),
-                sourceName: targetNodeName, // 【新增】源节点名称
-                targetName: relatedNodeName, // 【新增】目标节点名称
+                id: linkId,
+                source: sourceId,
+                target: targetId,
+                name: relationshipType,
+                sourceName: targetNodeName,
+                targetName: relatedNodeName,
+                relationIndex: relationIndex,
+                curveness: curveness,
                 lineStyle: {
                     color: relationType === 'person' ? '#8B4513' : '#4682B4',
                     width: 2,
-                    opacity: 0.8
+                    opacity: 0.8,
+                    curveness: curveness
                 }
             });
         },
 
+        calculateCurveness(relationIndex) {
+            if (relationIndex === 0) return 0; // 第一条关系保持直线
+
+            // 根据关系序号计算不同的弯曲度
+            const baseOffset = 0.15;
+            const direction = relationIndex % 2 === 1 ? 1 : -1; // 交替方向弯曲
+            const magnitude = Math.ceil(relationIndex / 2) * baseOffset;
+
+            return direction * magnitude;
+        },
+
+        getNodePairRelations(sourceId, targetId) {
+            const nodePairKey = sourceId < targetId ? `${sourceId}-${targetId}` : `${targetId}-${sourceId}`;
+            return this.nodePairRelations.get(nodePairKey) || [];
+        },
+
+        // 🔧 修改：loadAllRelations方法，增加数据量控制
         async loadAllRelations(session, nodes, links) {
             this.totalPersonRelations = 0;
             this.totalPlaceRelations = 0;
+
+            // 🆕 新增：首先获取总的关系数量
+            await this.getTotalRelationCount(session);
+
+            // 🆕 新增：根据设置决定查询的LIMIT
+            const queryLimit = this.showAllData ? '' : `LIMIT ${this.dataLimit}`;
+
             const processAllRecords = (records, type) => {
                 records.forEach(record => {
                     const sourceNode = record.get('m');
                     const targetNode = record.get('n');
                     const relationship = record.get('r');
+
+                    // 添加节点
                     [sourceNode, targetNode].forEach(nodeData => {
                         if (!nodes.has(nodeData.properties.id)) {
                             const isPlace = nodeData.labels.includes('Place');
@@ -365,7 +481,7 @@ export default {
                         }
                     });
 
-                    // 【新增】在创建链接时添加节点名称信息
+                    // 使用新的多重关系处理逻辑
                     const sourceNodeName = sourceNode.labels.includes('Place') ?
                         (sourceNode.properties.place || sourceNode.properties.name) :
                         sourceNode.properties.name;
@@ -373,31 +489,83 @@ export default {
                         (targetNode.properties.place || targetNode.properties.name) :
                         targetNode.properties.name;
 
+                    const sourceId = sourceNode.properties.id;
+                    const targetId = targetNode.properties.id;
+                    const relationshipType = relationship.properties.type || (type === 'person' ? '人人关系' : '人地关系');
+
+                    // 节点对的唯一标识
+                    const nodePairKey = sourceId < targetId ? `${sourceId}-${targetId}` : `${targetId}-${sourceId}`;
+
+                    if (!this.nodePairRelations.has(nodePairKey)) {
+                        this.nodePairRelations.set(nodePairKey, []);
+                    }
+
+                    const existingRelations = this.nodePairRelations.get(nodePairKey);
+                    const relationIndex = existingRelations.length;
+
+                    existingRelations.push({
+                        type: relationshipType,
+                        source: sourceId,
+                        target: targetId,
+                        sourceName: sourceNodeName,
+                        targetName: targetNodeName
+                    });
+
+                    const curveness = this.calculateCurveness(relationIndex);
+                    const linkId = `${sourceId}-${targetId}-${relationshipType}-${relationIndex}`;
+
                     links.push({
-                        source: sourceNode.properties.id,
-                        target: targetNode.properties.id,
-                        name: relationship.properties.type || (type === 'person' ? '人人关系' : '人地关系'),
-                        sourceName: sourceNodeName, // 【新增】源节点名称
-                        targetName: targetNodeName, // 【新增】目标节点名称
+                        id: linkId,
+                        source: sourceId,
+                        target: targetId,
+                        name: relationshipType,
+                        sourceName: sourceNodeName,
+                        targetName: targetNodeName,
+                        relationIndex: relationIndex,
+                        curveness: curveness,
                         lineStyle: {
                             color: type === 'person' ? '#8B4513' : '#4682B4',
                             width: 1.5,
-                            opacity: 0.7
+                            opacity: 0.7,
+                            curveness: curveness
                         }
                     });
                 });
             };
 
-            // 【核心修改】大幅减少初始加载的数量，让图谱不再混乱。您可以根据需要调整这个 LIMIT 值。
             if (this.showPersonRelations) {
-                const personResult = await session.run(`MATCH (m:Person)-[r]->(n:Person) RETURN m, n, r LIMIT 1000`);
+                const personQuery = `MATCH (m:Person)-[r]->(n:Person) RETURN m, n, r ${queryLimit}`;
+                const personResult = await session.run(personQuery);
                 processAllRecords(personResult.records, 'person');
                 this.totalPersonRelations = personResult.records.length;
             }
             if (this.showPlaceRelations) {
-                const placeResult = await session.run(`MATCH (m:Person)-[r]->(n:Place) RETURN m, n, r LIMIT 1000`);
+                const placeQuery = `MATCH (m:Person)-[r]->(n:Place) RETURN m, n, r ${queryLimit}`;
+                const placeResult = await session.run(placeQuery);
                 processAllRecords(placeResult.records, 'place');
                 this.totalPlaceRelations = placeResult.records.length;
+            }
+        },
+
+        // 🆕 新增：获取数据库中总的关系数量
+        async getTotalRelationCount(session) {
+            try {
+                let totalCount = 0;
+
+                if (this.showPersonRelations) {
+                    const personCountResult = await session.run(`MATCH (m:Person)-[r]->(n:Person) RETURN count(r) as count`);
+                    totalCount += personCountResult.records[0].get('count').toNumber();
+                }
+
+                if (this.showPlaceRelations) {
+                    const placeCountResult = await session.run(`MATCH (m:Person)-[r]->(n:Place) RETURN count(r) as count`);
+                    totalCount += placeCountResult.records[0].get('count').toNumber();
+                }
+
+                this.totalAvailableRelations = totalCount;
+            } catch (error) {
+                console.error('获取总关系数量失败:', error);
+                this.totalAvailableRelations = 0;
             }
         },
 
@@ -407,19 +575,41 @@ export default {
 
             const option = {
                 backgroundColor: 'transparent',
-                // 【修改】简化tooltip配置，只显示关系名称
                 tooltip: {
                     show: true,
                     trigger: 'item',
                     triggerOn: 'mousemove',
-                    formatter: function (params) {
-                        // 只处理边的tooltip，显示简单的关系名称
+                    formatter: (params) => {
                         if (params.dataType === 'edge') {
+                            const sourceId = params.data.source;
+                            const targetId = params.data.target;
+                            const allRelations = this.getNodePairRelations(sourceId, targetId);
+
+                            if (allRelations.length === 1) {
+                                return `<span style="color: #333; font-size: 14px; font-weight: bold;">${params.data.name}</span>`;
+                            } else if (allRelations.length > 1) {
+                                const relationTypes = [...new Set(allRelations.map(r => r.type))];
+                                return `
+                                    <div style="max-width: 250px; line-height: 1.4;">
+                                        <div style="color: #333; font-size: 14px; font-weight: bold; margin-bottom: 5px;">
+                                            多重关系 (${allRelations.length}个)
+                                        </div>
+                                        <div style="color: #666; font-size: 12px;">
+                                            ${relationTypes.map(type => {
+                                    const count = allRelations.filter(r => r.type === type).length;
+                                    return `• ${type} ${count > 1 ? `(${count}个)` : ''}`;
+                                }).join('<br/>')}
+                                        </div>
+                                        <div style="color: #999; font-size: 11px; margin-top: 5px;">
+                                            ${allRelations[0].sourceName} ↔ ${allRelations[0].targetName}
+                                        </div>
+                                    </div>
+                                `;
+                            }
                             return `<span style="color: #333; font-size: 14px; font-weight: bold;">${params.data.name}</span>`;
                         }
-                        return null; // 节点的tooltip由自定义事件处理
+                        return null;
                     },
-                    // 【新增】简单的tooltip样式
                     backgroundColor: 'rgba(255, 255, 255, 0.95)',
                     borderColor: '#ccc',
                     borderWidth: 1,
@@ -429,22 +619,22 @@ export default {
                 },
                 series: [{
                     type: 'graph',
-                    layout: 'force', // 始终使用力导向布局
+                    layout: 'force',
                     data: this.graphData.nodes,
                     links: this.graphData.links,
                     roam: true,
                     focusNodeAdjacency: true,
                     draggable: true,
 
-                    // 【核心修改】为初始视图和搜索视图设置不同的力导向参数
+                    // 🔧 修改：根据数据量调整力导向参数
                     force: {
-                        repulsion: isSearchMode ? 3000 : 500, // 初始视图斥力减小，搜索视图斥力增大
+                        repulsion: isSearchMode ? 3000 : (this.showAllData ? 300 : 500),
                         gravity: 0.05,
-                        edgeLength: isSearchMode ? 250 : 150, // 初始视图边长减小，搜索视图边长增大
+                        edgeLength: isSearchMode ? 250 : (this.showAllData ? 100 : 150),
                         layoutAnimation: true
                     },
                     label: {
-                        show: this.graphData.nodes.length < 200, // 节点数量不多时显示标签
+                        show: this.graphData.nodes.length < (this.showAllData ? 100 : 200),
                         position: 'right',
                         formatter: '{b}'
                     },
@@ -454,7 +644,6 @@ export default {
                         opacity: 0.6,
                         curveness: 0.1
                     },
-                    // 【新增】关系线条悬停时的高亮效果
                     emphasis: {
                         lineStyle: {
                             width: 4,
@@ -466,7 +655,7 @@ export default {
 
             this.myChart.setOption(option, true);
 
-            // 【修改】事件处理 - 添加对边的处理，但保持节点的自定义tooltip
+            // 事件处理
             this.myChart.off('click').on('click', (params) => {
                 if (params.dataType === 'node') {
                     this.selectNode(params.data);
@@ -475,18 +664,41 @@ export default {
 
             this.myChart.off('mouseover').on('mouseover', (params) => {
                 if (params.dataType === 'node') {
-                    // 对于节点，继续使用自定义tooltip
                     this.showNodeTooltip(params.data, params.event);
                 }
-                // 对于边，ECharts的tooltip会自动处理
             });
 
             this.myChart.off('mouseout').on('mouseout', (params) => {
                 if (params.dataType === 'node') {
                     this.hoveredNode = null;
                 }
-                // 对于边，ECharts会自动隐藏tooltip
             });
+        },
+
+        // 🆕 新增：切换数据显示模式
+        toggleDataLimit() {
+            this.showAllData = !this.showAllData;
+
+            // 显示加载提示
+            if (this.showAllData) {
+                const confirmResult = confirm(`即将加载全部数据，这可能需要较长时间并占用较多内存。是否继续？`);
+                if (!confirmResult) {
+                    this.showAllData = false;
+                    return;
+                }
+            }
+
+            // 重新加载数据
+            this.loadGraphData(this.currentSearchTarget ?
+                { name: this.currentSearchTarget, id: this.searchTargetId, type: this.searchTargetType } : null);
+        },
+
+        // 🆕 新增：数据限制改变处理
+        onDataLimitChange() {
+            if (!this.showAllData) {
+                this.loadGraphData(this.currentSearchTarget ?
+                    { name: this.currentSearchTarget, id: this.searchTargetId, type: this.searchTargetType } : null);
+            }
         },
 
         toggleRelationType(type) {
@@ -543,10 +755,29 @@ export default {
         },
 
         selectNode(nodeData) {
+            const nodeLinks = this.graphData.links.filter(l => l.source === nodeData.id || l.target === nodeData.id);
+
+            // 统计不同类型的关系
+            const relationStats = new Map();
+            nodeLinks.forEach(link => {
+                const relationType = link.name;
+                if (!relationStats.has(relationType)) {
+                    relationStats.set(relationType, 0);
+                }
+                relationStats.set(relationType, relationStats.get(relationType) + 1);
+            });
+
+            const relations = Array.from(relationStats.entries()).map(([type, count]) => ({
+                type: type,
+                count: count,
+                key: `${type}-${count}`
+            }));
+
             this.selectedNode = {
                 name: nodeData.name,
                 type: nodeData.type,
-                degree: this.graphData.links.filter(l => l.source === nodeData.id || l.target === nodeData.id).length
+                degree: nodeLinks.length,
+                relations: relations
             };
         },
 
@@ -577,7 +808,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/* 样式部分保持不变 */
+/* 原有样式保持不变，添加新的样式 */
 .search-result-message {
     position: absolute;
     top: 50%;
@@ -663,28 +894,32 @@ export default {
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 15px; // 🔧 减小间距以容纳更多按钮
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(15px);
     padding: 15px 30px;
     border-radius: 50px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     z-index: 100;
+    max-width: 90vw; // 🆕 新增：防止工具栏过宽
+    overflow-x: auto; // 🆕 新增：必要时允许水平滚动
 
     .graph-title {
         margin: 0;
         font-size: 24px;
         color: #8B4513;
         font-weight: bold;
+        white-space: nowrap; // 🆕 新增：防止标题换行
     }
 
     .toolbar-buttons {
         display: flex;
-        gap: 10px;
+        gap: 8px; // 🔧 减小按钮间距
+        flex-wrap: nowrap; // 🆕 新增：防止按钮换行
     }
 
     .btn {
-        padding: 10px 20px;
+        padding: 8px 16px; // 🔧 略微减小按钮padding
         border: 2px solid transparent;
         background: rgba(255, 255, 255, 0.8);
         border-radius: 25px;
@@ -692,6 +927,7 @@ export default {
         transition: all 0.3s ease;
         font-weight: 500;
         white-space: nowrap;
+        font-size: 14px; // 🔧 略微减小字体
 
         &:hover {
             background: rgba(248, 249, 250, 0.9);
@@ -719,6 +955,30 @@ export default {
 
             &:hover {
                 background: #B8941F;
+            }
+        }
+
+        // 🆕 新增：数据限制按钮样式
+        &.btn-limit {
+            background: #28a745;
+            color: white;
+
+            &:hover {
+                background: #218838;
+            }
+
+            &.active {
+                background: #dc3545;
+
+                &:hover {
+                    background: #c82333;
+                }
+            }
+
+            .data-count {
+                font-size: 12px;
+                opacity: 0.9;
+                margin-left: 4px;
             }
         }
     }
@@ -756,6 +1016,15 @@ export default {
             font-weight: bold;
         }
 
+        // 🆕 新增：数据状态样式
+        &.data-status {
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+        }
+
         .legend-dot {
             width: 14px;
             height: 14px;
@@ -773,6 +1042,12 @@ export default {
             &.search-target-node {
                 background-color: #FF6B6B;
             }
+        }
+
+        // 🆕 新增：图例信息图标
+        .legend-info {
+            margin-right: 10px;
+            font-size: 14px;
         }
     }
 }
@@ -824,7 +1099,9 @@ export default {
     }
 
     .search-section,
-    .node-info-section {
+    .node-info-section,
+    .data-control-section {
+        // 🆕 新增：数据控制面板样式
         padding: 20px;
         border-bottom: 1px solid rgba(222, 226, 230, 0.3);
 
@@ -929,6 +1206,91 @@ export default {
                 color: #8B4513;
             }
         }
+
+        .relation-list {
+            margin: 8px 0 0 20px;
+            padding: 0;
+
+            li {
+                list-style: disc;
+                margin: 4px 0;
+                font-size: 13px;
+                color: #666;
+            }
+        }
+
+        // 🆕 新增：数据控制面板特定样式
+        .control-group {
+            margin-bottom: 15px;
+
+            label {
+                display: block;
+                margin-bottom: 5px;
+                font-size: 13px;
+                color: #666;
+                font-weight: 500;
+            }
+
+            select {
+                width: 100%;
+                padding: 8px;
+                border: 2px solid #ddd;
+                border-radius: 6px;
+                font-size: 14px;
+
+                &:focus {
+                    outline: none;
+                    border-color: #8B4513;
+                }
+
+                &:disabled {
+                    background-color: #f5f5f5;
+                    color: #999;
+                    cursor: not-allowed;
+                }
+            }
+
+            .btn-toggle-all {
+                width: 100%;
+                padding: 12px;
+                border: none;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                background: #28a745;
+                color: white;
+
+                &:hover {
+                    background: #218838;
+                    transform: translateY(-1px);
+                }
+
+                &.active {
+                    background: #dc3545;
+
+                    &:hover {
+                        background: #c82333;
+                    }
+                }
+            }
+        }
+
+        .data-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 10px;
+
+            p {
+                margin: 0;
+                font-size: 12px;
+                color: #856404;
+                line-height: 1.4;
+            }
+        }
     }
 }
 
@@ -948,6 +1310,14 @@ export default {
 
     .stat-item {
         text-align: center;
+
+        &.stat-limited {
+
+            // 🆕 新增：部分数据模式的视觉指示
+            .stat-number {
+                color: #dc3545;
+            }
+        }
 
         .stat-number {
             display: block;
